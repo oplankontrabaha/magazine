@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Oplan Kontra Baha</title>
 <meta name="description" content="DPWH Oplan Kontra Baha — Project Monitoring, OKB Magazine, PDF export and regional waterway maps.">
-<meta name="theme-color" content="#0B1F3A">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,119 +15,38 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy:#0B1F3A;--navy-2:#1a3d73;--orange:#F26522;--orange-2:#ff8a4c;
-  --ink:#0B1F3A;--muted:#6b7a8c;--line:#e3e8ef;--paper:#ffffff;--page:#f6f8fb;
-  --shadow:0 10px 30px rgba(11,31,58,.08),0 2px 6px rgba(11,31,58,.06);
-  --shadow-lg:0 18px 44px rgba(11,31,58,.14),0 4px 10px rgba(11,31,58,.08);
+  --ink:#0B1F3A;--muted:#6b7a8c;--line:#e3e8ef;--paper:#ffffff;
+  --shadow:0 10px 30px rgba(11,31,58,.14),0 2px 6px rgba(11,31,58,.08);
   --ease:cubic-bezier(.2,.8,.2,1);
+  --sb:env(safe-area-inset-bottom,0px);--sr:env(safe-area-inset-right,0px);
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%}
-body{
-  font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);
-  background:var(--page) radial-gradient(#d9dfe8 1px,transparent 1.2px) 0 0/22px 22px;
-  -webkit-font-smoothing:antialiased;display:grid;grid-template-rows:auto 1fr;height:100dvh;overflow:hidden;
-}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+html,body{margin:0;height:100%;background:var(--paper)}
+body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden;height:100dvh}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
-/* ---------- header ---------- */
-.bar{
-  display:flex;align-items:center;gap:12px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));
-  background:var(--paper);box-shadow:0 2px 12px rgba(11,31,58,.08);position:relative;z-index:5;
-}
-.mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--navy),var(--navy-2));box-shadow:0 6px 14px rgba(11,31,58,.22);display:grid;place-items:center;flex:none}
-.mark svg{width:24px;height:24px;display:block}
-.titles{min-width:0;flex:1}
-.title{font-family:'Barlow Condensed','Inter',sans-serif;font-weight:700;text-transform:uppercase;font-size:21px;letter-spacing:.02em;line-height:1;color:var(--navy);white-space:nowrap}
-.title b{color:var(--orange);font-weight:700}
-.sub{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .25s var(--ease)}
-.sub.swap{opacity:0}
-.rail{display:flex;gap:8px}
-.icon-btn{
-  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--paper);
-  border:1px solid var(--line);box-shadow:0 2px 6px rgba(11,31,58,.06);color:var(--navy);
-  transition:transform .3s var(--ease),box-shadow .3s var(--ease),opacity .3s var(--ease),background .3s var(--ease);
-}
-.icon-btn svg{width:19px;height:19px}
-.icon-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
-.icon-btn:active{transform:scale(.96)}
-.icon-btn.accent{background:linear-gradient(135deg,var(--orange),var(--orange-2));color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(242,101,34,.28)}
-.icon-btn[hidden]{display:none}
+/* ---------- the live page fills everything ---------- */
+#frame{position:fixed;inset:0;width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .5s var(--ease)}
+#frame.ready{opacity:1}
 
-/* the thin line that glides while a page loads */
-.loader{position:absolute;left:0;right:0;bottom:-2px;height:2px;overflow:hidden;opacity:0;transition:opacity .3s}
+/* the thin line that glides along the top while a page loads */
+.loader{position:fixed;left:0;right:0;top:0;height:3px;z-index:30;overflow:hidden;opacity:0;transition:opacity .3s;pointer-events:none}
 .loader.on{opacity:1}
-.loader::after{content:'';position:absolute;top:0;left:0;width:34%;height:100%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);animation:glide 1.15s var(--ease) infinite}
+.loader::after{content:'';position:absolute;top:0;left:0;width:34%;height:100%;border-radius:3px;background:linear-gradient(90deg,transparent,var(--orange),transparent);animation:glide 1.15s var(--ease) infinite}
 @keyframes glide{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
 
-/* ---------- home ---------- */
-main{position:relative;min-height:0}
-.home{
-  position:absolute;inset:0;overflow:auto;padding:26px 18px calc(28px + env(safe-area-inset-bottom));
-  transition:opacity .38s var(--ease),transform .38s var(--ease);
-}
-.home.out{opacity:0;transform:translateY(14px);pointer-events:none}
-.wrap{max-width:940px;margin:0 auto}
-.lead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:2px 2px 16px}
-.lead h1{margin:0;font-family:'Barlow Condensed','Inter',sans-serif;text-transform:uppercase;font-weight:700;font-size:30px;letter-spacing:.02em;color:var(--navy);line-height:1}
-.lead h1 b{color:var(--orange)}
-.lead p{margin:0;font-size:13px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (min-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
-.card{
-  text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:18px 18px 16px;
-  box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;
-  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
-  animation:rise .55s var(--ease) both;
-}
-.card:nth-child(2){animation-delay:.06s}.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.18s}
-@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.card:active{transform:translateY(-1px) scale(.995)}
-.card::after{content:'';position:absolute;left:18px;right:18px;bottom:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--orange),transparent);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
-.card:hover::after{transform:scaleX(1)}
-.tile{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;color:#fff;box-shadow:0 8px 18px rgba(11,31,58,.18)}
-.tile svg{width:26px;height:26px}
-.tile.navy{background:linear-gradient(135deg,var(--navy),var(--navy-2))}
-.tile.orange{background:linear-gradient(135deg,#e8571a,var(--orange-2));box-shadow:0 8px 18px rgba(242,101,34,.28)}
-.card h2{margin:0;font-size:17px;font-weight:600;color:var(--navy);line-height:1.2}
-.card p{margin:0;font-size:13px;line-height:1.5;color:var(--muted);flex:1}
-.chip{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-size:11px;font-weight:500;color:var(--navy);background:#eef2f8;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-.chip svg{width:12px;height:12px}
-.chip.vip{color:#8a3a10;background:#fff1ea;border-color:#ffd9c4}
-.foot{margin:22px 2px 0;font-size:12px;color:var(--muted);line-height:1.6}
-.foot a{color:var(--navy)}
-
-/* install hint */
-.hint{
-  margin:0 0 16px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);
-  display:flex;gap:12px;align-items:flex-start;animation:rise .5s var(--ease) both;
-}
-.hint[hidden]{display:none}
-.hint .tile{width:40px;height:40px;border-radius:12px;flex:none}
-.hint .tile svg{width:20px;height:20px}
-.hint h3{margin:0 0 3px;font-size:14px;font-weight:600;color:var(--navy)}
-.hint p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
-.hint p b{color:var(--ink);font-weight:600}
-.hint .x{margin-left:auto;flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:var(--muted)}
-.hint .x:hover{background:#f1f4f8}
-.hint .go{margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--orange),var(--orange-2));border-radius:999px;padding:7px 14px;box-shadow:0 6px 14px rgba(242,101,34,.28)}
-.hint .go[hidden]{display:none}
-
-/* ---------- the live page ---------- */
-.stage{position:absolute;inset:0;background:var(--paper);opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
-.stage.in{opacity:1;pointer-events:auto}
-.stage iframe{width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .5s var(--ease)}
-.stage iframe.ready{opacity:1}
 .wait{
-  position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);text-align:center;
-  background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px 26px;min-width:260px;
+  position:fixed;left:50%;top:44%;transform:translate(-50%,-50%);z-index:20;text-align:center;
+  background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px 26px;min-width:250px;
   transition:opacity .35s var(--ease),transform .35s var(--ease);
 }
 .wait.off{opacity:0;transform:translate(-50%,-46%);pointer-events:none}
+.wait .mark{width:44px;height:44px;border-radius:13px;margin:0 auto 12px;background:linear-gradient(135deg,var(--navy),var(--navy-2));display:grid;place-items:center;box-shadow:0 6px 14px rgba(11,31,58,.22)}
+.wait .mark svg{width:26px;height:26px}
 .wait .line{width:150px;height:3px;border-radius:3px;background:#edf1f5;margin:0 auto 12px;overflow:hidden}
 .wait .line::after{content:'';display:block;width:42%;height:100%;border-radius:3px;background:var(--orange);animation:glide 1.05s var(--ease) infinite}
 .wait .what{font-weight:600;font-size:14px;color:var(--navy)}
@@ -135,76 +54,91 @@ main{position:relative;min-height:0}
 .wait .slow.show{opacity:1}
 .wait .slow button{color:var(--orange);font-weight:600;text-decoration:underline}
 
-@media (max-width:520px){
-  .title{font-size:19px}
-  .lead h1{font-size:26px}
-  .lead p{display:none}
-  .grid{gap:12px}
-  .card{padding:14px 14px 12px;border-radius:16px;gap:10px}
-  .card h2{font-size:15px}
-  .card p{font-size:12px}
-  .tile{width:42px;height:42px;border-radius:13px}.tile svg{width:22px;height:22px}
+/* ---------- the corner button and its menu ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(11,31,58,0);opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+.scrim.on{opacity:1;pointer-events:auto;background:rgba(11,31,58,.10)}
+.corner{position:fixed;right:calc(14px + var(--sr));bottom:calc(14px + var(--sb));z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.fab{
+  width:54px;height:54px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;
+  box-shadow:0 10px 24px rgba(11,31,58,.30),0 2px 6px rgba(11,31,58,.18);
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease),opacity .6s var(--ease);
 }
+.fab::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(242,101,34,.0);transition:border-color .4s,inset .4s}
+.fab:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(11,31,58,.34)}
+.fab:active{transform:scale(.95)}
+.fab.dim{opacity:.68}
+.fab:hover,.fab.open{opacity:1}
+.fab.open{transform:rotate(90deg);background:linear-gradient(135deg,#e8571a,var(--orange-2));box-shadow:0 12px 26px rgba(242,101,34,.36)}
+.fab svg{width:26px;height:26px;position:absolute;transition:opacity .25s var(--ease),transform .4s var(--ease)}
+.fab .ic-x{opacity:0;transform:rotate(-90deg) scale(.6)}
+.fab.open .ic-mark{opacity:0;transform:scale(.6)}
+.fab.open .ic-x{opacity:1;transform:rotate(-90deg) scale(1)}
+
+.menu{display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
+.menu.open{pointer-events:auto}
+.item{
+  display:flex;align-items:center;gap:10px;padding:7px 12px 7px 7px;border-radius:999px;
+  background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);
+  font-size:13.5px;font-weight:500;color:var(--navy);white-space:nowrap;
+  opacity:0;transform:translateY(14px) scale(.96);transform-origin:right center;
+  transition:opacity .32s var(--ease),transform .38s var(--ease),box-shadow .3s var(--ease),border-color .3s;
+}
+.menu.open .item{opacity:1;transform:none}
+.item:hover{box-shadow:0 14px 32px rgba(11,31,58,.18);border-color:#cfd8e4}
+.item:active{transform:scale(.98)}
+.item .tile{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#fff;flex:none;box-shadow:0 4px 10px rgba(11,31,58,.18)}
+.item .tile svg{width:18px;height:18px}
+.item .tile.navy{background:linear-gradient(135deg,var(--navy),var(--navy-2))}
+.item .tile.orange{background:linear-gradient(135deg,#e8571a,var(--orange-2));box-shadow:0 4px 10px rgba(242,101,34,.26)}
+.item .tile.gray{background:linear-gradient(135deg,#5c6b7d,#8795a7)}
+.item .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);margin-left:2px;box-shadow:0 0 0 3px rgba(242,101,34,.18);opacity:0;transition:opacity .3s}
+.item.current{border-color:rgba(242,101,34,.45)}
+.item.current .dot{opacity:1}
+.item.sep{margin-top:4px}
+.item[hidden]{display:none}
+
+/* the little note that appears above the button on a first visit */
+.bubble{
+  max-width:250px;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+  padding:10px 34px 10px 12px;font-size:12.5px;line-height:1.45;color:var(--ink);position:relative;
+  opacity:0;transform:translateY(8px);transition:opacity .4s var(--ease),transform .4s var(--ease);pointer-events:none;
+}
+.bubble.on{opacity:1;transform:none;pointer-events:auto}
+.bubble b{font-weight:600}
+.bubble::after{content:'';position:absolute;right:20px;bottom:-6px;width:11px;height:11px;background:var(--paper);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+.bubble .x{position:absolute;right:6px;top:6px;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;color:var(--muted)}
+.bubble .x:hover{background:#f1f4f8}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<header class="bar">
-  <div class="mark" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2.2 0 2.2-2 4.5-2s2.3 2 4.5 2 2.3-2 4.5-2 2.3 2 4.5 2"/><path d="M3 17c2.2 0 2.2-2 4.5-2s2.3 2 4.5 2 2.3-2 4.5-2 2.3 2 4.5 2" stroke="#F26522"/><path d="M8 7l4-4 4 4"/></svg>
+<div class="loader" id="loader"></div>
+
+<div id="frameHost"></div>
+
+<div class="wait" id="wait">
+  <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2.2 0 2.2-2 4.5-2s2.3 2 4.5 2 2.3-2 4.5-2 2.3 2 4.5 2"/><path d="M3 17c2.2 0 2.2-2 4.5-2s2.3 2 4.5 2 2.3-2 4.5-2 2.3 2 4.5 2" stroke="#F26522"/><path d="M8 7l4-4 4 4"/></svg></div>
+  <div class="line"></div>
+  <div class="what" id="waitWhat">Opening…</div>
+  <div class="slow" id="waitSlow">Taking a while? <button id="waitOpen">Open in the browser instead</button></div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<div class="corner">
+  <div class="bubble" id="bubble" role="status">
+    <span id="bubbleText"></span>
+    <button class="x" id="bubbleX" aria-label="Dismiss"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
-  <div class="titles">
-    <div class="title">Oplan <b>Kontra Baha</b></div>
-    <div class="sub" id="sub">Bureau of Equipment · DPWH</div>
-  </div>
-  <div class="rail">
-    <button class="icon-btn accent" id="installBtn" hidden title="Install this app" aria-label="Install this app">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></svg>
-    </button>
-    <button class="icon-btn" id="openBtn" hidden title="Open in browser" aria-label="Open this page in the browser">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>
-    </button>
-    <button class="icon-btn" id="homeBtn" hidden title="Back to the menu" aria-label="Back to the menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
-    </button>
-  </div>
-  <div class="loader" id="loader"></div>
-</header>
-
-<main>
-  <section class="home" id="home">
-    <div class="wrap">
-      <div class="hint" id="hint" hidden>
-        <div class="tile orange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></div>
-        <div>
-          <h3>Put OKB on your home screen</h3>
-          <p id="hintText">Install it like an app: it opens full-screen, with its own icon.</p>
-          <button class="go" id="hintGo" hidden>Install now</button>
-        </div>
-        <button class="x" id="hintX" aria-label="Dismiss"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-      </div>
-
-      <div class="lead">
-        <h1>Choose a <b>page</b></h1>
-        <p>Live from the OKB web app</p>
-      </div>
-
-      <div class="grid" id="grid"></div>
-
-      <p class="foot">Everything you see inside is the live Apps Script web app — nothing is copied here. If a page will not open inside the app, use the <em>Open in browser</em> button at the top.</p>
-    </div>
-  </section>
-
-  <section class="stage" id="stage">
-    <div class="wait" id="wait">
-      <div class="line"></div>
-      <div class="what" id="waitWhat">Opening…</div>
-      <div class="slow" id="waitSlow">Taking a while? <button id="waitOpen">Open in the browser instead</button></div>
-    </div>
-    <iframe id="frame" title="Oplan Kontra Baha" allow="clipboard-write *; clipboard-read *; fullscreen *; autoplay *; geolocation *" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </section>
-</main>
+  <div class="menu" id="menu" role="menu" aria-label="Pages and options"></div>
+  <button class="fab" id="fab" aria-label="Pages and options" aria-expanded="false" aria-controls="menu">
+    <svg class="ic-mark" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12c2.2 0 2.2-2 4.5-2s2.3 2 4.5 2 2.3-2 4.5-2 2.3 2 4.5 2"/><path d="M3 17c2.2 0 2.2-2 4.5-2s2.3 2 4.5 2 2.3-2 4.5-2 2.3 2 4.5 2" stroke="#F26522"/><path d="M8 7l4-4 4 4"/></svg>
+    <svg class="ic-x" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+  </button>
+</div>
 
 <script>
 /* =====================================================================
@@ -214,6 +148,10 @@ const CONFIG = {
   /* The Apps Script web app link (ends in /exec). */
   exec: 'https://script.google.com/macros/s/AKfycbwd0mgibtWbdPiGunQqDfnKWzkJy5CYauCy058dQL6948f0TZEdEvgZlN-ctI1llTrJ/exec',
 
+  /* Which page opens first. '' = plain /exec (Project Monitoring).
+     Other choices: 'duo', '2', 'mapping'. */
+  startPage: '',
+
   /* LEAVE THIS EMPTY on a public site.
      If you type your VIP word here, everyone who finds this site gets in
      with no password, and the word itself is visible in the page source. */
@@ -222,24 +160,21 @@ const CONFIG = {
 
 /* The four pages. `param` is the word Code.gs expects after ?page= */
 const PAGES = [
-  { key:'monitor', param:'',        title:'Project Monitoring',  tile:'navy',
-    desc:'Map, selectors and photo collage of every registered waterway. Sign in with your region.',
-    access:'pass', icon:'<path d="M3 5h18v11H3z"/><path d="M8 21h8"/><path d="M12 16v5"/><path d="m7 12 3-3 2 2 4-4"/>' },
-  { key:'duo',     param:'duo',     title:'OKB Magazine',        tile:'orange',
-    desc:'The two-screen magazine: cover, map with details, and the photo gallery.',
-    access:'pass', icon:'<path d="M4 4h7a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 4h-7a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7z"/>' },
-  { key:'pdf',     param:'2',       title:'Waterway Magazine',   tile:'navy',
-    desc:'One page per waterway. Arrange the photos, then export a whole region as a PDF.',
-    access:'pass', icon:'<path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 15h6"/><path d="M9 18h4"/>' },
-  { key:'maps',    param:'mapping', title:'Regional Maps',       tile:'orange',
-    desc:'A4 landscape map sheets per region, with waterway labels you can drag into place.',
-    access:'vip',  icon:'<path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14"/><path d="M15 6v14"/>' }
+  { key:'monitor', param:'',        title:'Project Monitoring', tile:'navy',
+    icon:'<path d="M3 5h18v11H3z"/><path d="M8 21h8"/><path d="M12 16v5"/><path d="m7 12 3-3 2 2 4-4"/>' },
+  { key:'duo',     param:'duo',     title:'OKB Magazine',       tile:'orange',
+    icon:'<path d="M4 4h7a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 4h-7a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7z"/>' },
+  { key:'pdf',     param:'2',       title:'Waterway Magazine · PDF', tile:'navy',
+    icon:'<path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 15h6"/><path d="M9 18h4"/>' },
+  { key:'maps',    param:'mapping', title:'Regional Maps',      tile:'orange',
+    icon:'<path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14"/><path d="M15 6v14"/>' }
 ];
 
 const $ = id => document.getElementById(id);
 const LS = { get(k){ try{ return localStorage.getItem(k); }catch(_){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(_){ } } };
+const svg = paths => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>';
 
-/* ---------- build the link for a page ---------- */
+/* ---------- the link for a page ---------- */
 function linkFor(page, hash){
   const q = [];
   if (page.param) q.push('page=' + encodeURIComponent(page.param));
@@ -249,110 +184,117 @@ function linkFor(page, hash){
   return url;
 }
 
-/* ---------- the menu ---------- */
-const lock = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
-const key  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9"/><path d="m17 6 3 3"/><path d="m14 9 2 2"/></svg>';
-function buildMenu(){
-  const grid = $('grid'); grid.innerHTML = '';
-  PAGES.forEach(p => {
-    const b = document.createElement('button'); b.className = 'card'; b.type = 'button';
-    const vipMode = !!CONFIG.vipWord;
-    const chip = p.access === 'vip'
-      ? (vipMode ? '<span class="chip vip">' + key + 'Opens directly</span>' : '<span class="chip vip">' + key + 'VIP link, or sign in first</span>')
-      : (vipMode ? '<span class="chip vip">' + key + 'Opens directly</span>' : '<span class="chip">' + lock + 'Region password</span>');
-    b.innerHTML = '<div class="tile ' + p.tile + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + p.icon + '</svg></div>'
-      + '<h2>' + p.title + '</h2><p>' + p.desc + '</p>' + chip;
-    b.addEventListener('click', () => open(p, '', true));
-    grid.appendChild(b);
-  });
-}
-
-/* ---------- opening a page inside the app ---------- */
+/* ---------- opening a page ----------
+   Each page gets a brand-new frame. Re-pointing one frame would add the
+   frame's own hops to the browser history, and the phone's Back button
+   would walk through those instead of our pages. A fresh frame's first
+   load adds nothing. */
 let current = null, slowTimer = 0;
-function setSub(text){ const s = $('sub'); s.classList.add('swap'); setTimeout(() => { s.textContent = text; s.classList.remove('swap'); }, 220); }
-
+function mountFrame(url){
+  const host = $('frameHost'), old = $('frame');
+  const f = document.createElement('iframe');
+  f.id = 'frame'; f.title = 'Oplan Kontra Baha';
+  f.setAttribute('allow', 'clipboard-write *; clipboard-read *; fullscreen *; autoplay *; geolocation *');
+  f.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+  f.addEventListener('load', () => {
+    if (f !== $('frame')) return;
+    f.classList.add('ready'); $('wait').classList.add('off'); $('loader').classList.remove('on'); clearTimeout(slowTimer);
+  });
+  f.src = url;
+  if (old) old.remove();
+  host.appendChild(f);
+}
 function open(page, hash, push){
+  if (current === page && !hash && $('frame')) { closeMenu(); return; }
   current = page;
-  const url = linkFor(page, hash);
-  const frame = $('frame');
-  frame.classList.remove('ready');
   $('wait').classList.remove('off'); $('waitSlow').classList.remove('show');
-  $('waitWhat').textContent = 'Opening ' + page.title + '…';
+  $('waitWhat').textContent = 'Opening ' + page.title.replace(' · PDF', '') + '…';
   $('loader').classList.add('on');
   clearTimeout(slowTimer); slowTimer = setTimeout(() => $('waitSlow').classList.add('show'), 9000);
-
-  frame.src = url;
-  $('home').classList.add('out');
-  $('stage').classList.add('in');
-  $('homeBtn').hidden = false; $('openBtn').hidden = false;
-  setSub(page.title);
-  document.title = page.title + ' · OKB';
-  if (push) history.pushState({ page: page.key, hash: hash || '' }, '', '?page=' + (page.param || 'monitor') + (hash ? '#' + hash : ''));
+  mountFrame(linkFor(page, hash));
+  document.title = (page.param ? page.title.replace(' · PDF', '') + ' · ' : '') + 'OKB';
+  markCurrent();
+  closeMenu();
+  if (push) history.pushState({ page: page.key, hash: hash || '' }, '', page.param ? '?page=' + page.param + (hash ? '#' + hash : '') : location.pathname + (hash ? '#' + hash : ''));
 }
-function home(push){
-  current = null;
-  $('stage').classList.remove('in');
-  $('home').classList.remove('out');
-  $('homeBtn').hidden = true; $('openBtn').hidden = true;
-  $('loader').classList.remove('on'); clearTimeout(slowTimer);
-  setSub('Bureau of Equipment · DPWH');
-  document.title = 'Oplan Kontra Baha';
-  /* let the fade finish before the frame is emptied, so nothing flashes */
-  setTimeout(() => { if (!current) $('frame').removeAttribute('src'); }, 450);
-  if (push) history.pushState({ page: null }, '', location.pathname);
-}
-$('frame').addEventListener('load', () => {
-  if (!current) return;
-  $('frame').classList.add('ready'); $('wait').classList.add('off'); $('loader').classList.remove('on'); clearTimeout(slowTimer);
-});
-$('homeBtn').addEventListener('click', () => home(true));
-$('openBtn').addEventListener('click', () => { if (current) window.open(linkFor(current, ''), '_blank', 'noopener'); });
-$('waitOpen').addEventListener('click', () => { if (current) window.open(linkFor(current, ''), '_blank', 'noopener'); });
+function openInBrowser(){ if (current) window.open(linkFor(current, ''), '_blank', 'noopener'); closeMenu(); }
+$('waitOpen').addEventListener('click', openInBrowser);
 window.addEventListener('popstate', e => {
   const s = e.state || {};
-  const p = s.page ? PAGES.find(x => x.key === s.page) : null;
-  if (p) open(p, s.hash || '', false); else home(false);
+  const p = (s.page && PAGES.find(x => x.key === s.page)) || PAGES[0];
+  if (p !== current) open(p, s.hash || '', false);
 });
 
-/* ---------- install prompt (Android / desktop Chrome) and the iPhone hint ---------- */
+/* ---------- the corner menu ---------- */
+let menuOpen = false, dimTimer = 0;
+function item(html, cls, onClick){
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'item' + (cls ? ' ' + cls : ''); b.setAttribute('role', 'menuitem');
+  b.innerHTML = html; b.addEventListener('click', onClick); return b;
+}
+function buildMenu(){
+  const m = $('menu'); m.innerHTML = '';
+  PAGES.forEach(p => {
+    const b = item('<span class="tile ' + p.tile + '">' + svg(p.icon) + '</span><span>' + p.title + '</span><span class="dot"></span>', '', () => open(p, '', true));
+    b.dataset.key = p.key; m.appendChild(b);
+  });
+  const inst = item('<span class="tile gray">' + svg('<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/>') + '</span><span>Install as an app</span>', 'sep', doInstall);
+  inst.id = 'installItem'; inst.hidden = true; m.appendChild(inst);
+  m.appendChild(item('<span class="tile gray">' + svg('<path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/>') + '</span><span>Open in browser</span>', 'sep', openInBrowser));
+  /* the stagger: items nearest the button move first */
+  const items = Array.from(m.children).reverse();
+  items.forEach((el, i) => el.style.transitionDelay = (i * 35) + 'ms');
+}
+function markCurrent(){ Array.from($('menu').children).forEach(el => el.classList.toggle('current', !!current && el.dataset.key === current.key)); }
+function setMenu(on){
+  menuOpen = on;
+  $('menu').classList.toggle('open', on); $('fab').classList.toggle('open', on); $('scrim').classList.toggle('on', on);
+  $('fab').setAttribute('aria-expanded', String(on));
+  clearTimeout(dimTimer);
+  if (on) { $('fab').classList.remove('dim'); hideBubble(); }
+  else dimTimer = setTimeout(() => $('fab').classList.add('dim'), 3500);
+}
+function closeMenu(){ if (menuOpen) setMenu(false); }
+$('fab').addEventListener('click', () => setMenu(!menuOpen));
+$('scrim').addEventListener('click', closeMenu);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+/* ---------- install (Android / desktop Chrome) and the iPhone note ---------- */
 let deferredPrompt = null;
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function showBubble(html){ $('bubbleText').innerHTML = html; $('bubble').classList.add('on'); setTimeout(hideBubble, 14000); }
+function hideBubble(){ $('bubble').classList.remove('on'); }
+$('bubbleX').addEventListener('click', () => { hideBubble(); LS.set('okb.hint', 'no'); });
 window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault(); deferredPrompt = e;
-  $('installBtn').hidden = false;
-  if (LS.get('okb.hint') !== 'no') { $('hint').hidden = false; $('hintGo').hidden = false; }
+  e.preventDefault(); deferredPrompt = e; $('installItem').hidden = false;
+  if (LS.get('okb.hint') !== 'no' && !standalone) showBubble('Tap the round button to switch pages or <b>install OKB as an app</b>.');
 });
 async function doInstall(){
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  try { await deferredPrompt.userChoice; } catch(_){}
-  deferredPrompt = null; $('installBtn').hidden = true; $('hint').hidden = true;
+  closeMenu(); if (!deferredPrompt) return;
+  deferredPrompt.prompt(); try { await deferredPrompt.userChoice; } catch(_){}
+  deferredPrompt = null; $('installItem').hidden = true;
 }
-$('installBtn').addEventListener('click', doInstall);
-$('hintGo').addEventListener('click', doInstall);
-$('hintX').addEventListener('click', () => { $('hint').hidden = true; LS.set('okb.hint', 'no'); });
-window.addEventListener('appinstalled', () => { $('installBtn').hidden = true; $('hint').hidden = true; });
+window.addEventListener('appinstalled', () => { $('installItem').hidden = true; hideBubble(); });
 if (isIOS && !standalone && LS.get('okb.hint') !== 'no') {
-  $('hintText').innerHTML = 'In Safari, tap <b>Share</b> (the square with the arrow), then <b>Add to Home Screen</b>.';
-  $('hint').hidden = false;
+  setTimeout(() => showBubble('Add OKB to your home screen: in Safari tap <b>Share</b>, then <b>Add to Home Screen</b>. The round button switches pages.'), 2500);
 }
 
-/* ---------- the app shell works offline; the live pages still need internet ---------- */
+/* ---------- the shell works offline; the live pages still need internet ---------- */
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
 
-/* ---------- start: the menu, or straight to a page if the link says so ---------- */
+/* ---------- start: straight into the web app ---------- */
 buildMenu();
 (function start(){
   const want = new URLSearchParams(location.search).get('page');
   const hash = location.hash.replace(/^#/, '');
-  if (want) {
-    const p = PAGES.find(x => x.key === want || x.param === want || (want === 'index2' && x.param === '2') || (want === 'map' && x.param === 'mapping') || ((want === 'device' || want === 'showcase') && x.param === 'duo'));
-    if (p) { history.replaceState({ page: p.key, hash }, '', location.href); open(p, hash, false); return; }
-  }
-  history.replaceState({ page: null }, '', location.href);
+  const alias = { index2:'2', map:'mapping', device:'duo', showcase:'duo', monitor:'' };
+  const wantParam = want == null ? CONFIG.startPage : (alias.hasOwnProperty(want) ? alias[want] : want);
+  const p = PAGES.find(x => x.param === wantParam) || PAGES[0];
+  history.replaceState({ page: p.key, hash }, '', location.href);
+  open(p, hash, false);
+  dimTimer = setTimeout(() => $('fab').classList.add('dim'), 4000);
 })();
 </script>
 </body>

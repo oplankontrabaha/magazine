@@ -1,8 +1,10 @@
 # OKB App — launcher for the Oplan Kontra Baha web app
 
-A tiny website that turns the OKB Apps Script link into an **installable app**:
-a home-screen icon, a menu of the four pages, and each page opening full-screen
-inside the app. Nothing is copied — every page is the live `/exec` web app.
+A tiny website that turns the OKB Apps Script link into an **installable app**.
+It opens straight into the `/exec` page (Project Monitoring), full-screen. A
+round button in the lower-right corner unfolds the options: the other three
+pages, *Open in browser*, and *Install as an app* where the phone supports it.
+Nothing is copied — every page is the live `/exec` web app.
 
 ## Launch it (about 3 minutes)
 
@@ -20,7 +22,7 @@ That address is the app. Open it on a phone:
 
 | File | What it is |
 |---|---|
-| `index.html` | The app: header, menu of the four pages, and the full-screen frame that shows the live web app. The `/exec` link is at the top of its `<script>`, in `CONFIG`. |
+| `index.html` | The app: the full-screen frame that shows the live web app, plus the corner button and its menu. The `/exec` link and the start page are at the top of its `<script>`, in `CONFIG`. |
 | `manifest.webmanifest` | Tells phones the app's name, colours and icon so it can be installed. |
 | `sw.js` | Keeps the menu available offline. The live pages still need internet. |
 | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | App icons (Android / desktop). |
@@ -35,7 +37,7 @@ The app has its own short links. `?page=` picks a page; anything after `#` is
 passed to the page as a route.
 
 ```
-https://<you>.github.io/okb/                      the menu
+https://<you>.github.io/okb/                      Project Monitoring (the start page)
 https://<you>.github.io/okb/?page=duo             OKB Magazine
 https://<you>.github.io/okb/?page=monitor         Project Monitoring
 https://<you>.github.io/okb/?page=2               Waterway Magazine (PDF export)
@@ -46,6 +48,7 @@ https://<you>.github.io/okb/?page=duo#regionvi/iloilo/waterway/buntatala-creek
 ## Changing things
 
 - **New `/exec` link** (only if you create a *new deployment* in Apps Script): open `index.html`, change `exec:` inside `CONFIG`, commit. Editing an existing deployment to a *new version* keeps the same link, so nothing to change.
+- **Different start page:** set `startPage` in `CONFIG` to `'duo'`, `'2'` or `'mapping'` (empty = Project Monitoring).
 - **Force phones to pick up a changed `index.html`:** in `sw.js`, change `okb-shell-v1` to `okb-shell-v2`, commit.
 - **VIP (no-password) mode:** `CONFIG.vipWord` is empty on purpose. If you fill it in, *everyone* who finds this public site skips the password, and the word is readable in the page source. Only do that in a private setting, and remember the launcher can be shared just like the VIP link.
 
