@@ -1,0 +1,16 @@
+{
+  "name": "Oplan Kontra Baha",
+  "short_name": "OKB",
+  "description": "DPWH Oplan Kontra Baha — Project Monitoring, OKB Magazine, PDF export and regional waterway maps.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0B1F3A",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
