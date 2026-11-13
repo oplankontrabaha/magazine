@@ -2,8 +2,10 @@
 
 A tiny website that turns the OKB Apps Script link into an **installable app**.
 It opens straight into the `/exec` page (Project Monitoring), full-screen. A
-round button in the lower-right corner unfolds the options: the other three
-pages, *Open in browser*, and *Install as an app* where the phone supports it.
+round button in the lower-right corner unfolds the options: *Generate PDF
+Report*, *Generate PDF reports with maps and pictures*, *Open in browser*, and
+*Install as an app* where the phone supports it. (The OKB Magazine page is still
+reachable by link: `?page=duo`.)
 Nothing is copied — every page is the live `/exec` web app.
 
 ## Launch it (about 3 minutes)
